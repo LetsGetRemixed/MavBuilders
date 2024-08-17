@@ -2,7 +2,7 @@ import React from 'react';
 
 const Header = () => {
   const images = [
-    'url("/images/house1.png")',
+    'url("/images/kitchen2.jpg")',
     'url("/images/house2.jpg")',
     'url("/images/house3.jpg")',
   ];
@@ -18,18 +18,19 @@ const Header = () => {
 
   return (
     <header
-      className="h-screen min-h-screen bg-cover bg-center bg-no-repeat transition-all duration-500"
+      className="h-[50vh] bg-cover bg-center bg-no-repeat transition-all duration-500"
       style={{ backgroundImage: images[currentImage] }}
     >
-      <div className="flex items-center justify-center h-full bg-black bg-opacity-50">
-      <h1 className="flex items-center">
-  <span className="text-mavyellow font-montserrat text-5xl font-bold">Mav</span>
-  <span className="text-mavwhite font-montserrat text-5xl font-bold ml-2">Builders LLC.</span>
-</h1>
+      <div className="flex items-center justify-center h-full bg-black bg-opacity-50 px-4">
+        <h1 className="flex flex-col md:flex-row items-center text-center">
+          <span className="text-mavyellow font-montserrat text-3xl md:text-5xl font-bold">Mav</span>
+          <span className="text-mavwhite font-montserrat text-3xl md:text-5xl font-bold mt-2 md:mt-0 md:ml-2">Builders LLC.</span>
+        </h1>
       </div>
     </header>
   );
 };
 
 export default Header;
+
 

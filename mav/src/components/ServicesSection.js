@@ -1,27 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-const ServiceItem = ({ title, images }) => {
-  const sectionRef = useRef(null);
+const ServiceItem = ({ title, images, reverse, details }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const section = sectionRef.current;
-      if (section) {
-        const rect = section.getBoundingClientRect();
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-          section.classList.add('fade-in');
-        } else {
-          section.classList.remove('fade-in');
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
+  const [isDetailVisible, setIsDetailVisible] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -30,20 +11,54 @@ const ServiceItem = ({ title, images }) => {
     return () => clearInterval(interval);
   }, [images.length]);
 
+  const handleButtonClick = () => {
+    setIsDetailVisible(!isDetailVisible);
+  };
+
   return (
-    <div
-      ref={sectionRef}
-      className="opacity-0 transition-opacity duration-1000 ease-in-out flex items-center py-16"
-    >
-      <div className="w-1/2 text-right pr-8">
-        <h3 className="text-3xl md:text-4xl font-bold text-mavyellow mb-4 font-montserrat">
-          {title}
-        </h3>
-      </div>
-      <div className="w-1/2">
-        <div className="w-full h-64 bg-gray-300 bg-cover bg-center transition-all duration-1000"
-             style={{ backgroundImage: `url(${images[currentImageIndex]})` }}>
+    <div className="relative flex items-center justify-center py-16">
+      {/* Image Container */}
+      <div
+        className={`relative h-96 bg-cover bg-center transition-transform duration-1000 ease-in-out z-20 ${isDetailVisible ? (reverse ? 'translate-x-[40%]' : '-translate-x-[40%]') : ''}`}
+        style={{
+          width: '80%',
+          backgroundImage: `url(${images[currentImageIndex]})`,
+        }}
+      >
+        {/* Text Overlay */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="bg-white bg-opacity-75 p-4 rounded-lg shadow-md">
+            <h3 className="text-2xl md:text-3xl font-bold text-mavyellow font-montserrat text-center shadow-lg">
+              {title}
+            </h3>
+          </div>
         </div>
+
+        {/* Button */}
+        <button
+          className={`absolute top-0 h-full w-12 bg-mavyellow text-mavblack hover:bg-mavwhite hover:text-mavblack transition-colors duration-300 z-30 flex items-center justify-center`}
+          style={{ 
+            transform: isDetailVisible ? (reverse ? 'translateX(-40%)' : 'translateX(40%)') : 'translateX(0)',
+            [reverse ? 'left' : 'right']: '0'
+          }}
+          onClick={handleButtonClick}
+          aria-label="More Details"
+        >
+          {isDetailVisible ? (reverse ? '→' : '←') : (reverse ? '←' : '→')}
+        </button>
+      </div>
+
+      {/* Detail Text (Revealed behind the image) */}
+      <div
+        className={`absolute top-0 h-full p-8 flex items-center justify-center z-10 bg-black bg-opacity-75 text-mavwhite ${reverse ? 'left-0' : 'right-0'}`}
+        style={{ 
+          width: '40%', // Fixed width to match where the image slides
+          transform: isDetailVisible ? 'translateX(0)' : (reverse ? 'translateX(-100%)' : 'translateX(100%)'),
+          transition: 'transform 1s ease-in-out',
+          [reverse ? 'right' : 'left']: 'auto', // Align the text opposite to the button
+        }}
+      >
+        <p className="text-lg font-sans break-words">{details}</p>
       </div>
     </div>
   );
@@ -51,21 +66,33 @@ const ServiceItem = ({ title, images }) => {
 
 const ServicesSection = () => {
   return (
-    <section className="bg-mavblack text-mavwhite">
+    <section className="bg-mavwhite text-mavblack">
       <ServiceItem
         title="Custom Homes"
-        images={['/images/house2.jpg', '/images/house2.jpg', '/images/house2.jpg']}
+        images={['/images/house2.jpg']}
+        reverse={false}
+        details="Our custom homes are built with attention to detail, reflecting your personal style and ensuring comfort and luxury in every corner. From the foundation to the finishing touches, we work with you to create the home of your dreams."
       />
       <ServiceItem
         title="Any Projects"
-        images={['/images/house2.jpg', '/images/house2.jpg', '/images/house2.jpg']}
+        images={['/images/house2.jpg']}
+        reverse={true}
+        details="Whether it’s a small renovation or a large-scale construction project, we have the expertise to bring your vision to life. Our team is dedicated to delivering high-quality results on time and within budget."
       />
       <ServiceItem
         title="We Do It All"
-        images={['/images/house2.jpg', '/images/house2.jpg', '/images/house2.jpg']}
+        images={['/images/house2.jpg']}
+        reverse={false}
+        details="From residential to commercial projects, we handle it all with professionalism and precision. Our comprehensive services include design, construction, and project management to ensure a seamless experience from start to finish."
       />
     </section>
   );
 };
 
 export default ServicesSection;
+
+
+
+
+
+
